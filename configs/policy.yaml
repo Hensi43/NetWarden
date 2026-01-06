@@ -1,0 +1,30 @@
+# Policy Configuration for Smart Network Throttler
+
+system:
+  interface: "en0"  # Default WiFi interface on Mac. Change to eth0 or wlan0 for Linux.
+  check_interval: 2  # Seconds between monitor checks
+  monitor_mode: "simulated_on_mac_due_to_sip" # See README. Real per-process net usage on Mac requires root+entitlements or specific tools. We will use nettop if available or estimate.
+
+classes:
+  high:
+    priority: 1
+    description: "Real-time communication, SSH, Admin tools"
+    keywords: ["zoom", "webex", "skype", "ssh", "code", "terminal", "iterm2", "teams"]
+    min_bandwidth_guarantee: "5mbit"
+
+  medium:
+    priority: 2
+    description: "Browsing, Development, Git"
+    keywords: ["chrome", "firefox", "safari", "git", "python", "node", "vscode", "slack"]
+    max_bandwidth: "20mbit"
+
+  low:
+    priority: 3
+    description: "Background downloads, torrents"
+    keywords: ["transmission", "torrent", "curl", "wget", "steam", "spotify"]
+    max_bandwidth: "1mbit"  # Strict throttle
+
+fairness:
+  enable_dynamic_throttling: true
+  punish_hogs: true
+  hog_threshold_mbps: 10.0  # If a low/medium app exceeds this, crush it.
