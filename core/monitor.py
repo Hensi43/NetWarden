@@ -20,6 +20,7 @@ class ProcessMetric:
         self.io_rate_in = 0.0
         self.io_rate_out = 0.0
         self.last_update = time.time()
+        self.history_in = [] # List of float rates
         self.ports = []
 
     def update(self, bytes_in, bytes_out):
@@ -29,6 +30,11 @@ class ProcessMetric:
 
         self.io_rate_in = (bytes_in - self.bytes_in) / delta
         self.io_rate_out = (bytes_out - self.bytes_out) / delta
+        
+        # Keep last 20 samples (~40 seconds of history)
+        self.history_in.append(self.io_rate_in)
+        if len(self.history_in) > 20:
+            self.history_in.pop(0)
         
         self.bytes_in = bytes_in
         self.bytes_out = bytes_out

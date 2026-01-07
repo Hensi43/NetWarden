@@ -1,4 +1,4 @@
-# Policy Configuration for Smart Network Throttler
+# Policy Configuration for NetWarden
 
 system:
   interface: "en0"  # Default WiFi interface on Mac. Change to eth0 or wlan0 for Linux.

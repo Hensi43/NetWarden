@@ -10,6 +10,6 @@ cd "$(dirname "$0")/.."
 
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 
-echo "Starting Smart Network Throttler..."
+echo "Starting NetWarden..."
 # Use the virtual environment python
 ./venv/bin/python main.py
