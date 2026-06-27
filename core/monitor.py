@@ -28,8 +28,15 @@ class ProcessMetric:
         delta = now - self.last_update
         if delta <= 0: return
 
-        self.io_rate_in = (bytes_in - self.bytes_in) / delta
-        self.io_rate_out = (bytes_out - self.bytes_out) / delta
+        diff_in = bytes_in - self.bytes_in
+        diff_out = bytes_out - self.bytes_out
+        
+        # Sockets closing can cause cumulative counters to decrease. Handle this gracefully.
+        if diff_in < 0: diff_in = 0
+        if diff_out < 0: diff_out = 0
+
+        self.io_rate_in = diff_in / delta
+        self.io_rate_out = diff_out / delta
         
         # Keep last 20 samples (~40 seconds of history)
         self.history_in.append(self.io_rate_in)
@@ -98,14 +105,11 @@ class NetworkMonitor:
         # Example: 13:43:54,Google Chrome H.79917,,,25867197,3471308,...
         
         with self.lock:
+            poll_stats = {}
             for line in lines[1:]:
                 # Split by comma
                 parts = line.split(',')
                 if len(parts) < 6: continue
-                
-                # "syslogd.604" is index 1.
-                # Index 4 is 0 (bytes_in)
-                # Index 5 is 1493 (bytes_out)
                 
                 try:
                     proc_str = parts[1]
@@ -114,19 +118,22 @@ class NetworkMonitor:
                     name_part, pid_part = proc_str.rsplit('.', 1)
                     pid = int(pid_part)
                     
-                    # Columns in this specific CSV format:
-                    # [4] bytes_in
-                    # [5] bytes_out
                     bytes_in = int(parts[4])
                     bytes_out = int(parts[5])
                     
-                    if pid in self.metrics:
-                        self.metrics[pid].update(bytes_in, bytes_out)
-                    else:
-                        self.metrics[pid] = ProcessMetric(pid, name_part, bytes_in, bytes_out)
+                    if pid not in poll_stats:
+                        poll_stats[pid] = {"name": name_part, "bytes_in": 0, "bytes_out": 0}
+                    poll_stats[pid]["bytes_in"] += bytes_in
+                    poll_stats[pid]["bytes_out"] += bytes_out
                         
                 except Exception:
                     continue
+
+            for pid, stats in poll_stats.items():
+                if pid in self.metrics:
+                    self.metrics[pid].update(stats["bytes_in"], stats["bytes_out"])
+                else:
+                    self.metrics[pid] = ProcessMetric(pid, stats["name"], stats["bytes_in"], stats["bytes_out"])
 
     def _monitor_linux_proc(self):
         # Fallback simpler monitor for Linux if nethogs not available
