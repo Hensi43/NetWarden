@@ -71,7 +71,7 @@ export const NetworkGraph = ({ processes }) => {
         const link = linkGroup.selectAll("line")
             .data(links)
             .enter().append("line")
-            .attr("stroke", "#334155")
+            .attr("stroke", "#cbd5e1")
             .attr("stroke-width", d => Math.max(1, Math.sqrt(d.value) * 2))
             .attr("stroke-opacity", 0.6);
 
@@ -88,15 +88,15 @@ export const NetworkGraph = ({ processes }) => {
         node.append("circle")
             .attr("r", d => d.r)
             .attr("fill", d => {
-                if (d.type === 'hub') return '#fff';
+                if (d.type === 'hub') return '#f8fafc';
                 if (d.penalized) return '#f43f5e'; // Rose
                 if (d.category === 'high') return '#10b981'; // Emerald
                 if (d.category === 'medium') return '#06b6d4'; // Cyan
-                return '#64748b'; // Slate
+                return '#94a3b8'; // Slate
             })
             .attr("fill-opacity", d => d.type === 'hub' ? 1.0 : 0.6)
             .attr("stroke", d => {
-                if (d.type === 'hub') return '#fff';
+                if (d.type === 'hub') return '#cbd5e1';
                 if (d.penalized) return '#f43f5e';
                 return '#fff';
             })
@@ -119,10 +119,10 @@ export const NetworkGraph = ({ processes }) => {
             .attr("text-anchor", "middle")
             .attr("dy", d => d.type === 'hub' ? 5 : 4)
             .attr("font-size", d => d.type === 'hub' ? 10 : Math.min(10, d.r))
-            .attr("fill", "#fff")
+            .attr("fill", "#1e293b")
             .attr("pointer-events", "none")
             .attr("font-weight", "bold")
-            .style("text-shadow", "0 1px 4px rgba(0,0,0,0.8)");
+            .style("text-shadow", "none");
 
         // Tooltips (simple D3 title for now)
         node.append("title")
@@ -166,8 +166,8 @@ export const NetworkGraph = ({ processes }) => {
     return (
         <div className="glass-panel w-full h-full relative overflow-hidden" ref={containerRef}>
             <div className="absolute top-4 left-4 z-10 pointer-events-none">
-                <h3 className="font-semibold text-white/90">Live Topology</h3>
-                <p className="text-xs text-gray-500">Physics-based network visualization</p>
+                <h3 className="font-semibold text-slate-900">Live Topology</h3>
+                <p className="text-xs text-slate-500">Physics-based network visualization</p>
             </div>
             <svg ref={svgRef} className="w-full h-full" />
         </div>

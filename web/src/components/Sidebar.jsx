@@ -23,16 +23,16 @@ export const Sidebar = ({ activeTab, onTabChange }) => {
 
     return (
         <div className={clsx(
-            "flex flex-col border-r border-slate-800 bg-slate-950 transition-all duration-300",
+            "flex flex-col border-r border-slate-200 bg-white transition-all duration-300",
             collapsed ? "w-16" : "w-64"
         )}>
             {/* Logo Area */}
-            <div className="h-16 flex items-center px-4 border-b border-slate-800">
+            <div className="h-16 flex items-center px-4 border-b border-slate-200">
                 <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shrink-0">
                     <Activity className="text-white w-5 h-5" />
                 </div>
                 {!collapsed && (
-                    <div className="ml-3 font-semibold text-slate-100 tracking-tight">
+                    <div className="ml-3 font-semibold text-slate-900 tracking-tight">
                         NetWarden <span className="text-indigo-500">Pro</span>
                     </div>
                 )}
@@ -47,14 +47,14 @@ export const Sidebar = ({ activeTab, onTabChange }) => {
                         className={clsx(
                             "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors group",
                             activeTab === item.id
-                                ? "bg-indigo-500/10 text-indigo-400"
-                                : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                                ? "bg-indigo-500/10 text-indigo-600"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                         )}
                     >
-                        <item.icon className={clsx("w-5 h-5 shrink-0", activeTab === item.id ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300")} />
+                        <item.icon className={clsx("w-5 h-5 shrink-0", activeTab === item.id ? "text-indigo-600" : "text-slate-500 group-hover:text-slate-700")} />
                         {!collapsed && <span className="ml-3">{item.label}</span>}
                         {collapsed && activeTab === item.id && (
-                            <div className="absolute left-16 px-2 py-1 bg-slate-800 text-xs text-white rounded shadow-md ml-2 z-50">
+                            <div className="absolute left-16 px-2 py-1 bg-white border border-slate-200 text-xs text-slate-900 rounded shadow-md ml-2 z-50">
                                 {item.label}
                             </div>
                         )}
@@ -63,10 +63,10 @@ export const Sidebar = ({ activeTab, onTabChange }) => {
             </div>
 
             {/* Bottom Actions */}
-            <div className="p-4 border-t border-slate-800">
+            <div className="p-4 border-t border-slate-200">
                 <button
                     onClick={() => setCollapsed(!collapsed)}
-                    className="flex items-center justify-center w-full p-2 text-slate-500 hover:text-slate-300 transition-colors"
+                    className="flex items-center justify-center w-full p-2 text-slate-500 hover:text-slate-700 transition-colors"
                     title="Toggle Sidebar"
                 >
                     <ChevronLeft className={clsx("w-5 h-5 transition-transform", collapsed && "rotate-180")} />
